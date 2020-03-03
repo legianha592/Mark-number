@@ -12,6 +12,12 @@ cc.Class({
         real_time: 60,
         delta_time: 0,
         level: 1,
+        display_point: 0,
+        point: 0,
+        point_time: 10,
+        level_lbl: cc.Label,
+        point_lbl: cc.Label,
+        display_point_lbl: cc.Label,
     },
 
     start () {
@@ -20,7 +26,10 @@ cc.Class({
     },
 
     reloadMap(){
+
+
         this.box_inside.removeAllChildren();
+        this.level_lbl.string = "Level "+this.level;
         var number_square;
         if (this.level<12){
             number_square = this.level+1;
@@ -77,11 +86,13 @@ cc.Class({
             this.level++;
             this.time += 3;
             this.real_time +=3;
+            this.displayPoint();
             this.reloadMap();
         }
         else{
             this.time -= 10;
             this.real_time -= 10;
+            this.point_time = 10;
             this.reloadMap();
         }
     },
@@ -90,17 +101,47 @@ cc.Class({
         this.delta_time += dt;
         if (this.delta_time >1){
             this.time--;
+            this.point_time--;
             this.delta_time = 0;
         }
         this.real_time -= dt;
-        this.setTimer();
+        if (this.real_time>0){
+            this.setTimer();
+        }
+        else{
+            this.endGame();
+        }
+    },
+
+    displayPoint(){
+        this.point += this.point_time;
+        this.point_lbl.string = String(this.point);
+        this.display_point_lbl.node.y = 360;
+        this.display_point_lbl.string = "+"+this.point_time;
+        this.display_point_lbl.node.runAction(
+            cc.sequence(
+                cc.fadeIn(0.1),
+                cc.moveBy(0.5, cc.v2(0, 50)),
+                cc.fadeOut(0.1)
+            )
+        );
+
+        this.point_time = 10;
+    },
+
+    endGame(){
+        
     },
 
     setTimer(){
         this.time_lbl.string = String(this.time);
         this.time_progress.progress = this.real_time/60;
         if (this.real_time>30){
-            this.time_progress.node.getChildByName("bar").color = new cc.Color (255-255*(this.real_time-30)/30, 255, 0);
+            var time;
+            if (this.real_time>60){
+                time = 60
+            }
+            this.time_progress.node.getChildByName("bar").color = new cc.Color (255-255*(time-30)/30, 255, 0);
         }
         else{
             this.time_progress.node.getChildByName("bar").color = new cc.Color (255, 255*(this.real_time/30), 0);
