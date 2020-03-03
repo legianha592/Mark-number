@@ -7,6 +7,7 @@ cc.Class({
         box_outside: cc.Node,
         box_inside: cc.Node,
         item_box: cc.Prefab,
+        item_endgame: cc.Prefab,
         time_lbl: cc.Label,
         time: 60,
         real_time: 60,
@@ -26,8 +27,6 @@ cc.Class({
     },
 
     reloadMap(){
-
-
         this.box_inside.removeAllChildren();
         this.level_lbl.string = "Level "+this.level;
         var number_square;
@@ -105,7 +104,7 @@ cc.Class({
             this.delta_time = 0;
         }
         this.real_time -= dt;
-        if (this.real_time>0){
+        if (this.real_time>=0){
             this.setTimer();
         }
         else{
@@ -130,7 +129,7 @@ cc.Class({
     },
 
     endGame(){
-        
+        this.item_endgame.apprear();
     },
 
     setTimer(){
